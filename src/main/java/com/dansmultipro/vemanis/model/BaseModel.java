@@ -22,12 +22,38 @@ public class BaseModel {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false, length = 36)
-    private UUID createdBy;
-
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "updated_by", length = 36)
-    private UUID updatedBy;
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

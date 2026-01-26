@@ -8,6 +8,9 @@ import jakarta.persistence.Table;
 @Table(name = "t_history_status")
 public class HistoryStatus extends BaseModel{
 
-    @Column(length = 5, nullable = false)
+    @Column(length = 5, nullable = false, unique = true)
     private String code;
+
+    @Column(length = 5, nullable = false)
+    private String name;
 }
