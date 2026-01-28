@@ -1,7 +1,6 @@
 package com.dansmultipro.vemanis.model;
 
 import jakarta.persistence.*;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Entity
 @Table(
@@ -16,7 +15,7 @@ public class Product extends BaseModel{
     private String name;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Integer stock;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -38,12 +37,12 @@ public class Product extends BaseModel{
         this.name = name;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getStock() {
+        return stock;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 
     public Category getCategory() {

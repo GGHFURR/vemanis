@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface AgentService {
     List<AgentRes> getAll();
 
-    AgentRes getById(UUID id);
+    AgentRes getById(String id);
 
     CreateResDTO createAgent(CreateAgentReq req);
 

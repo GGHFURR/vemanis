@@ -10,6 +10,34 @@ public class StockHistoryRes {
     private String product;
     private String status;
 
+    public StockHistoryRes(UUID id, LocalDateTime date, Integer quantity, String product, String status) {
+        this.id = id;
+        this.date = date;
+        this.quantity = quantity;
+        this.product = product;
+        this.status = status;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
     public void setId(UUID id) {
         this.id = id;
     }
@@ -29,4 +57,5 @@ public class StockHistoryRes {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

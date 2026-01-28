@@ -12,29 +12,22 @@ import java.util.List;
 
 public class CreateCheckOutReq {
 
-    @NotBlank(message = "Code Required")
-    @Size(max = 5)
-    private String code;
-
-    @NotNull(message = "Date Required ")
-    private LocalDateTime date;
-
     @NotBlank(message = "Agent Required")
-    private String agent;
+    private String agentId;
 
     @NotNull(message = "Data Product and Quantity Required")
     private List<@Valid CheckOutDataReq> dataReqList;
 
-    public String getCode() {
-        return code;
+    public String getAgentId() {
+        return agentId;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public void setAgentId(String agentId) {
+        this.agentId = agentId;
     }
 
-    public String getAgent() {
-        return agent;
+    public void setDataReqList(List<CheckOutDataReq> dataReqList) {
+        this.dataReqList = dataReqList;
     }
 
     public List<CheckOutDataReq> getDataReqList() {

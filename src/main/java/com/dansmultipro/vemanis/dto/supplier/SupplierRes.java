@@ -15,4 +15,11 @@ public class SupplierRes {
         return name;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

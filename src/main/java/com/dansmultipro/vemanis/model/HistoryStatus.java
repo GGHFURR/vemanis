@@ -11,6 +11,22 @@ public class HistoryStatus extends BaseModel{
     @Column(length = 5, nullable = false, unique = true)
     private String code;
 
-    @Column(length = 5, nullable = false)
+    @Column(length = 55, nullable = false)
     private String name;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

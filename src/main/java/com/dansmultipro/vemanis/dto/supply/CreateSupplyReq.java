@@ -1,5 +1,6 @@
 package com.dansmultipro.vemanis.dto.supply;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -7,24 +8,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class CreateSupplyReq {
-    @NotNull(message = "Date Required")
-    private LocalDateTime date;
-
-    @NotNull(message = "Supply Data Required")
-    private List<SupplyDataReq> dataSupply;
 
     @NotBlank(message = "Supplier Required")
-    private String supplier;
+    private String supplierId;
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    @NotNull(message = "Supply Data Required")
+    private List<@Valid SupplyDataReq> dataSupply;
+
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public List<SupplyDataReq> getDataSupply() {
+        return dataSupply;
     }
 
     public void setDataSupply(List<SupplyDataReq> dataSupply) {
         this.dataSupply = dataSupply;
-    }
-
-    public void setSupplier(String supplier) {
-        this.supplier = supplier;
     }
 }

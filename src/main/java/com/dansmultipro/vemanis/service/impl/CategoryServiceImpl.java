@@ -9,23 +9,28 @@ import com.dansmultipro.vemanis.dto.category.UpdateCategoryReq;
 import com.dansmultipro.vemanis.exception.BadRequestException;
 import com.dansmultipro.vemanis.exception.DuplicateResourceException;
 import com.dansmultipro.vemanis.exception.NotFoundException;
+import com.dansmultipro.vemanis.exception.ResourceConflictException;
 import com.dansmultipro.vemanis.model.Category;
 import com.dansmultipro.vemanis.repository.CategoryRepo;
+import com.dansmultipro.vemanis.repository.ProductRepo;
 import com.dansmultipro.vemanis.service.BaseService;
 import com.dansmultipro.vemanis.service.CategoryService;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class CategoryServiceImpl extends BaseService implements CategoryService {
 
     private final CategoryRepo categoryRepo;
+    private final ProductRepo productRepo;
 
-
-    public CategoryServiceImpl(CategoryRepo categoryRepo) {
+    public CategoryServiceImpl(CategoryRepo categoryRepo, ProductRepo productRepo) {
         this.categoryRepo = categoryRepo;
+        this.productRepo = productRepo;
     }
 
     @Override
@@ -35,7 +40,8 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
 
     @Override
     public CategoryRes getbyId(String id){
-        return categoryRepo.findById(UUID.fromString(id)).map(this::mapToResponse)
+        var categoryId = validateId(id);
+        return categoryRepo.findById(categoryId).map(this::mapToResponse)
                 .orElseThrow(() -> new NotFoundException("Agent Tidak Ditemukan"));
     }
 
@@ -45,11 +51,16 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
         if(categoryRepo.existsByName(req.getName())){
             throw new BadRequestException("Please Input Another Name");
         }
+        if(categoryRepo.existsByCode(req.getCode())){
+            throw new BadRequestException("Please Input Another Code");
+        }
 
         Category category = new Category();
         category.setCode(req.getCode());
         category.setName(req.getName());
         createBase(category);
+
+        categoryRepo.save(category);
 
         return new CreateResDTO(category.getId(),"Category Created");
     }
@@ -57,12 +68,14 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
     @Transactional
     @Override
     public UpdateResDTO update(String id, UpdateCategoryReq req){
-        var category = categoryRepo.findById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundException("Data Agent Tidak Ditemukan"));
+        var categoryId = validateId(id);
 
-        if(category.getName().equals(req.getName())){
+        var category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Data Category Tidak Ditemukan"));
+
+        if(!category.getName().equals(req.getName())){
             Optional<Category> existingCategory = categoryRepo.findByName(req.getName());
-            if(existingCategory.isPresent() && existingCategory.get().getCode().equals(req.getCode())){
+            if(existingCategory.isPresent()){
                 throw new DuplicateResourceException("Data Is Not Unique");
             }
         }
@@ -84,10 +97,17 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
 
     @Override
     public DeleteResDTO delete(String id){
-        categoryRepo.deleteById(UUID.fromString(id));
+        var categoryId = validateId(id);
+        var category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Data Category Tidak Ditemukan"));
+
+        if(productRepo.findByCategory(category)){
+            throw new ResourceConflictException("Data Cant Be Deleted Because Having Relation In Product");
+        };
+
+        categoryRepo.delete(category);
         return new DeleteResDTO("Deleted");
     }
-
 
     private CategoryRes mapToResponse(Category category){
         return new CategoryRes(category.getId(), category.getCode(), category.getName());

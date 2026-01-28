@@ -10,7 +10,7 @@ public class CreateProductReq {
     @NotBlank(message = "Name Required")
     private String name;
     @NotBlank(message = "Category Required")
-    private String category;
+    private String categoryId;
 
     public String getCode() {
         return code;
@@ -20,7 +20,7 @@ public class CreateProductReq {
         return name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCategoryId() {
+        return categoryId;
     }
 }

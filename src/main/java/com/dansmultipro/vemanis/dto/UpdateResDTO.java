@@ -1,5 +1,7 @@
 package com.dansmultipro.vemanis.dto;
 
+import java.util.UUID;
+
 public class UpdateResDTO {
     private Integer version;
     private String message;
@@ -14,5 +16,13 @@ public class UpdateResDTO {
     }
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

@@ -27,4 +27,16 @@ public class CategoryRes {
     public void setName(String name) {
         this.name = name;
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

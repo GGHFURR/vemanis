@@ -6,11 +6,10 @@ import com.dansmultipro.vemanis.dto.UpdateResDTO;
 import com.dansmultipro.vemanis.dto.agent.AgentRes;
 import com.dansmultipro.vemanis.dto.agent.CreateAgentReq;
 import com.dansmultipro.vemanis.dto.agent.UpdateAgentReq;
-import com.dansmultipro.vemanis.exception.BadRequestException;
-import com.dansmultipro.vemanis.exception.DuplicateResourceException;
-import com.dansmultipro.vemanis.exception.NotFoundException;
+import com.dansmultipro.vemanis.exception.*;
 import com.dansmultipro.vemanis.model.Agent;
 import com.dansmultipro.vemanis.repository.AgentRepo;
+import com.dansmultipro.vemanis.repository.CheckOutRepo;
 import com.dansmultipro.vemanis.service.AgentService;
 import com.dansmultipro.vemanis.service.BaseService;
 import jakarta.transaction.Transactional;
@@ -23,10 +22,12 @@ import java.util.UUID;
 @Service
 public class AgentServiceImpl extends BaseService implements AgentService {
 
-    private AgentRepo agentRepo;
+    private final AgentRepo agentRepo;
+    private final CheckOutRepo checkOutRepo;
 
-    public AgentServiceImpl(AgentRepo agentRepo) {
+    public AgentServiceImpl(AgentRepo agentRepo, CheckOutRepo checkOutRepo) {
         this.agentRepo = agentRepo;
+        this.checkOutRepo = checkOutRepo;
     }
 
     @Override
@@ -35,8 +36,9 @@ public class AgentServiceImpl extends BaseService implements AgentService {
     }
 
     @Override
-    public AgentRes getById(UUID id){
-        return agentRepo.findById(id).map(this::mapToResponse)
+    public AgentRes getById(String id){
+        var agentId = validateId(id);
+        return agentRepo.findById(agentId).map(this::mapToResponse)
                 .orElseThrow(() -> new NotFoundException("Agent Tidak Ditemukan"));
     }
 
@@ -51,13 +53,15 @@ public class AgentServiceImpl extends BaseService implements AgentService {
         agent.setName(req.getName());
         createBase(agent);
 
+        agentRepo.save(agent);
         return new CreateResDTO(agent.getId(), "Agent Created");
     }
 
     @Transactional
     @Override
     public UpdateResDTO updateAgent(String id, UpdateAgentReq req){
-        var agent = agentRepo.findById(UUID.fromString(id))
+        var agentId = validateId(id);
+        var agent = agentRepo.findById(agentId)
                 .orElseThrow(() -> new NotFoundException("Data Agent Tidak Ditemukan"));
 
         if(!agent.getName().equals(req.getName())){
@@ -81,7 +85,15 @@ public class AgentServiceImpl extends BaseService implements AgentService {
 
     @Override
     public DeleteResDTO delete(String id){
-        agentRepo.deleteById(UUID.fromString(id));
+        var agentId = validateId(id);
+        var agent = agentRepo.findById(agentId)
+                .orElseThrow(() -> new NotFoundException("Data Agent Not Found"));
+
+        if(checkOutRepo.existsByAgent(agent)){
+           throw new ResourceConflictException("Data Cant Be Deleted Because Having Relation In Transaction Record");
+        }
+
+        agentRepo.delete(agent);
         return new DeleteResDTO("Deleted");
     }
 

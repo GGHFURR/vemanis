@@ -2,15 +2,17 @@ package com.dansmultipro.vemanis.handler;
 
 
 import com.dansmultipro.vemanis.dto.ErrorResDTO;
-import com.dansmultipro.vemanis.exception.BadRequestException;
-import com.dansmultipro.vemanis.exception.DuplicateResourceException;
-import com.dansmultipro.vemanis.exception.NotFoundException;
+import com.dansmultipro.vemanis.exception.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -42,4 +44,33 @@ public class ErrorHandler {
         return new ResponseEntity<>(new ErrorResDTO<>(ex.getMessage()),HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(NotAllowedStateException.class)
+    public ResponseEntity<ErrorResDTO<String>> notAllowedStateException (NotAllowedStateException ex){
+        return new ResponseEntity<>(new ErrorResDTO<>(ex.getMessage()),HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResDTO<String>> HttpRequestMethodNotSupportedException (HttpRequestMethodNotSupportedException ex){
+        return new ResponseEntity<>(new ErrorResDTO<>(ex.getMessage()),HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResDTO<String>> DataIntegrityViolationException (){
+        return new ResponseEntity<>(new ErrorResDTO<>("Data Integrity Violation Expected"),HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResDTO<String>> NoResourceFoundException (NoResourceFoundException ex){
+        return new ResponseEntity<>(new ErrorResDTO<>(ex.getMessage()),HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResDTO<String>> HttpMessageNotReadableException (){
+        return new ResponseEntity<>(new ErrorResDTO<>("Invalid Format Json, Please Check Again"),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceConflictException.class)
+    public ResponseEntity<ErrorResDTO<String>> ResourceConflictException (ResourceConflictException ex){
+        return new ResponseEntity<>(new ErrorResDTO<>(ex.getMessage()),HttpStatus.CONFLICT);
+    }
 }
