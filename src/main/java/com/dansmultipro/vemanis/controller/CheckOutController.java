@@ -5,15 +5,15 @@ import com.dansmultipro.vemanis.dto.checkout.CheckOutRes;
 import com.dansmultipro.vemanis.dto.checkout.CheckOutResDetail;
 import com.dansmultipro.vemanis.dto.checkout.CreateCheckOutReq;
 import com.dansmultipro.vemanis.service.CheckOutService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/checkout")
+@RequestMapping("/api/checkouts")
 public class CheckOutController {
 
     private final CheckOutService checkOutService;

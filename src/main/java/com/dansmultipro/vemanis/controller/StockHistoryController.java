@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/stock-history")
+@RequestMapping("/api/stock-histories")
 public class StockHistoryController {
 
     private final StockHistoryService stockHistoryService;
