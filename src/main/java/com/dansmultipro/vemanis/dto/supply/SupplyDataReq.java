@@ -9,7 +9,7 @@ public class SupplyDataReq {
     @NotBlank(message = "Product Id Required")
     private String productId;
 
-    @NotNull(message = "quantity Required")
+    @NotNull(message = "Quantity Required")
     @Min(value = 1, message = "Quantity Must Greater Than 0")
     private Integer quantity;
 

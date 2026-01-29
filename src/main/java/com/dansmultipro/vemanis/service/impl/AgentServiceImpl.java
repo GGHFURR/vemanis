@@ -6,7 +6,10 @@ import com.dansmultipro.vemanis.dto.UpdateResDTO;
 import com.dansmultipro.vemanis.dto.agent.AgentRes;
 import com.dansmultipro.vemanis.dto.agent.CreateAgentReq;
 import com.dansmultipro.vemanis.dto.agent.UpdateAgentReq;
-import com.dansmultipro.vemanis.exception.*;
+import com.dansmultipro.vemanis.exception.BadRequestException;
+import com.dansmultipro.vemanis.exception.DuplicateResourceException;
+import com.dansmultipro.vemanis.exception.NotFoundException;
+import com.dansmultipro.vemanis.exception.ResourceConflictException;
 import com.dansmultipro.vemanis.model.Agent;
 import com.dansmultipro.vemanis.repository.AgentRepo;
 import com.dansmultipro.vemanis.repository.CheckOutRepo;
@@ -17,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AgentServiceImpl extends BaseService implements AgentService {
@@ -39,7 +41,7 @@ public class AgentServiceImpl extends BaseService implements AgentService {
     public AgentRes getById(String id){
         var agentId = validateId(id);
         return agentRepo.findById(agentId).map(this::mapToResponse)
-                .orElseThrow(() -> new NotFoundException("Agent Tidak Ditemukan"));
+                .orElseThrow(() -> new NotFoundException("Agent Not Found"));
     }
 
     @Transactional
@@ -62,7 +64,7 @@ public class AgentServiceImpl extends BaseService implements AgentService {
     public UpdateResDTO updateAgent(String id, UpdateAgentReq req){
         var agentId = validateId(id);
         var agent = agentRepo.findById(agentId)
-                .orElseThrow(() -> new NotFoundException("Data Agent Tidak Ditemukan"));
+                .orElseThrow(() -> new NotFoundException("Data Agent Not Found"));
 
         if(!agent.getName().equals(req.getName())){
             Optional<Agent> existingAgent = agentRepo.findByName(req.getName());

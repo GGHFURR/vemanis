@@ -1,7 +1,5 @@
 package com.dansmultipro.vemanis.dto.category;
 
-import jakarta.persistence.Column;
-
 import java.util.UUID;
 
 public class CategoryRes {

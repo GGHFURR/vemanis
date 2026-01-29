@@ -21,6 +21,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -82,11 +83,19 @@ public class ProductServiceImpl extends BaseService implements ProductService {
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Product Not Found"));
 
+        if (!product.getCode().equals(req.getCode())) {
+            Optional<Product> existingByCode = productRepo.findByCode(req.getCode());
+            if (existingByCode.isPresent()) {
+                throw new DuplicateResourceException("Product Code Already Exists");
+            }
+        }
+
         if (!product.getVersion().equals(req.getVersion())) {
             throw new BadRequestException("Please Refresh The Page");
         }
 
-        Category category = categoryRepo.findById(UUID.fromString(req.getCategory()))
+        var categoryId = validateId(req.getCategoryId());
+        Category category = categoryRepo.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category Not Found"));
 
         product.setCode(req.getCode());

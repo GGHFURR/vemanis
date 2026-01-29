@@ -1,6 +1,5 @@
 package com.dansmultipro.vemanis.dto.product;
 
-import com.dansmultipro.vemanis.model.Category;
 import jakarta.validation.constraints.NotBlank;
 
 public class CreateProductReq {
@@ -11,6 +10,14 @@ public class CreateProductReq {
     private String name;
     @NotBlank(message = "Category Required")
     private String categoryId;
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getCode() {
         return code;

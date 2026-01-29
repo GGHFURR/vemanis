@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CategoryServiceImpl extends BaseService implements CategoryService {
@@ -39,10 +38,10 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
     }
 
     @Override
-    public CategoryRes getbyId(String id){
+    public CategoryRes getById(String id){
         var categoryId = validateId(id);
         return categoryRepo.findById(categoryId).map(this::mapToResponse)
-                .orElseThrow(() -> new NotFoundException("Agent Tidak Ditemukan"));
+                .orElseThrow(() -> new NotFoundException("Data Category Not Found"));
     }
 
     @Transactional
@@ -71,12 +70,19 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
         var categoryId = validateId(id);
 
         var category = categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Data Category Tidak Ditemukan"));
+                .orElseThrow(() -> new NotFoundException("Data Category Not Found"));
 
         if(!category.getName().equals(req.getName())){
-            Optional<Category> existingCategory = categoryRepo.findByName(req.getName());
-            if(existingCategory.isPresent()){
-                throw new DuplicateResourceException("Data Is Not Unique");
+            Optional<Category> existingByName = categoryRepo.findByName(req.getName());
+            if(existingByName.isPresent()){
+                throw new DuplicateResourceException("Category Name Already Exists");
+            }
+        }
+
+        if(!category.getCode().equals(req.getCode())){
+            Optional<Category> existingByCode = categoryRepo.findByCode(req.getCode());
+            if(existingByCode.isPresent()){
+                throw new DuplicateResourceException("Category Code Already Exists");
             }
         }
 
@@ -92,18 +98,17 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
         categoryRepo.saveAndFlush(category);
 
         return new UpdateResDTO(category.getVersion(),"Updated");
-
     }
 
     @Override
     public DeleteResDTO delete(String id){
         var categoryId = validateId(id);
         var category = categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Data Category Tidak Ditemukan"));
+                .orElseThrow(() -> new NotFoundException("Data Category Not Found"));
 
-        if(productRepo.findByCategory(category)){
-            throw new ResourceConflictException("Data Cant Be Deleted Because Having Relation In Product");
-        };
+        if(productRepo.existsByCategory(category)){
+            throw new ResourceConflictException("Data Can't Be Deleted Because Having Relation In Product");
+        }
 
         categoryRepo.delete(category);
         return new DeleteResDTO("Deleted");

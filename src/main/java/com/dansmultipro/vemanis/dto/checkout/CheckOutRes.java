@@ -32,4 +32,19 @@ public class CheckOutRes {
         this.agent = agent;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public String getAgent() {
+        return agent;
+    }
 }

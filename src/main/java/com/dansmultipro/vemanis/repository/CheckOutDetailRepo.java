@@ -7,6 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CheckOutDetailRepo extends JpaRepository<CheckOutDetail, UUID> {
-
     Optional<CheckOutDetail> findByCheckOutId(UUID id);
 }

@@ -7,11 +7,11 @@ import com.dansmultipro.vemanis.dto.category.CategoryRes;
 import com.dansmultipro.vemanis.dto.category.CreateCategoryReq;
 import com.dansmultipro.vemanis.dto.category.UpdateCategoryReq;
 import com.dansmultipro.vemanis.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,7 +32,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryRes> getById(@PathVariable String id) {
-        var res = categoryService.getbyId(id);
+        var res = categoryService.getById(id);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

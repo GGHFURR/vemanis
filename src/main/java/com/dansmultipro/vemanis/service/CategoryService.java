@@ -6,14 +6,13 @@ import com.dansmultipro.vemanis.dto.UpdateResDTO;
 import com.dansmultipro.vemanis.dto.category.CategoryRes;
 import com.dansmultipro.vemanis.dto.category.CreateCategoryReq;
 import com.dansmultipro.vemanis.dto.category.UpdateCategoryReq;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
 public interface CategoryService {
     List<CategoryRes> getAll();
 
-    CategoryRes getbyId(String id);
+    CategoryRes getById(String id);
 
     CreateResDTO create(CreateCategoryReq req);
 

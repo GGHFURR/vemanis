@@ -1,13 +1,12 @@
 package com.dansmultipro.vemanis.handler;
 
-
 import com.dansmultipro.vemanis.dto.ErrorResDTO;
 import com.dansmultipro.vemanis.exception.*;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,7 +20,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResDTO<List<String>>> handleMethodArgumentNotValidException (MethodArgumentNotValidException ex){
-        var errors =  ex.getBindingResult().getAllErrors().stream().map((ObjectError oe) -> oe.getDefaultMessage()).toList();
+        var errors =  ex.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
 
         return new ResponseEntity<>(new ErrorResDTO<>(errors), HttpStatus.BAD_REQUEST);
     }

@@ -6,7 +6,6 @@ import com.dansmultipro.vemanis.dto.supply.CreateSupplyReq;
 import com.dansmultipro.vemanis.dto.supply.SupplyDataReq;
 import com.dansmultipro.vemanis.dto.supply.SupplyRes;
 import com.dansmultipro.vemanis.dto.supply.SupplyResDetail;
-import com.dansmultipro.vemanis.exception.BadRequestException;
 import com.dansmultipro.vemanis.exception.DuplicateResourceException;
 import com.dansmultipro.vemanis.exception.NotFoundException;
 import com.dansmultipro.vemanis.model.*;
@@ -19,8 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+
+import static com.dansmultipro.vemanis.util.GenerateRandomAlphaNumberic.generateRandomAlphaNumeric;
 
 @Service
 public class SupplyServiceImpl extends BaseService implements SupplyService {
@@ -86,6 +85,7 @@ public class SupplyServiceImpl extends BaseService implements SupplyService {
         supply.setCode(generateRandomAlphaNumeric(5));
         supply.setDate(LocalDateTime.now());
         supply.setSupplier(supplier);
+
         createBase(supply);
 
         supplyRepo.save(supply);
@@ -129,12 +129,11 @@ public class SupplyServiceImpl extends BaseService implements SupplyService {
 
             supplyDetailRepo.save(detail);
 
-            createHistory(req, product, data.getQuantity(), statusIn);
+            createHistory(product, data.getQuantity(), statusIn);
         }
     }
 
     private void createHistory(
-            CreateSupplyReq req,
             Product product,
             Integer quantity,
             HistoryStatus status
@@ -148,16 +147,5 @@ public class SupplyServiceImpl extends BaseService implements SupplyService {
         createBase(history);
 
         stockHistoryRepo.save(history);
-    }
-
-    private String generateRandomAlphaNumeric(int length) {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder result = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(chars.length());
-            result.append(chars.charAt(index));
-        }
-        return result.toString();
     }
 }

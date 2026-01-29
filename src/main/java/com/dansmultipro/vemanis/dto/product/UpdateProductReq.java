@@ -12,10 +12,26 @@ public class UpdateProductReq {
     private String name;
 
     @NotBlank(message = "Category Required")
-    private String category;
+    private String categoryId;
 
     @NotNull(message = "Please Refresh The Page")
     private Integer version;
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
     public String getCode() {
         return code;
@@ -25,11 +41,12 @@ public class UpdateProductReq {
         return name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCategoryId() {
+        return categoryId;
     }
 
     public Integer getVersion() {
         return version;
     }
+
 }

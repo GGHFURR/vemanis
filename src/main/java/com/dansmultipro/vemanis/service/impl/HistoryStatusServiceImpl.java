@@ -1,7 +1,6 @@
 package com.dansmultipro.vemanis.service.impl;
 
 import com.dansmultipro.vemanis.dto.historyStatus.HistoryStatusRes;
-import com.dansmultipro.vemanis.model.HistoryStatus;
 import com.dansmultipro.vemanis.repository.HistoryStatusRepo;
 import com.dansmultipro.vemanis.service.BaseService;
 import com.dansmultipro.vemanis.service.HistoryStatusService;

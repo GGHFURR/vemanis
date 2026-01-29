@@ -1,6 +1,5 @@
 package com.dansmultipro.vemanis.dto.product;
 
-
 import java.util.UUID;
 
 public class ProductRes {

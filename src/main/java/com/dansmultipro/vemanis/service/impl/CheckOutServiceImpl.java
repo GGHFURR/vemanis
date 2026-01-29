@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+
+import static com.dansmultipro.vemanis.util.GenerateRandomAlphaNumberic.generateRandomAlphaNumeric;
 
 @Service
 public class CheckOutServiceImpl extends BaseService implements CheckOutService {
@@ -30,7 +31,9 @@ public class CheckOutServiceImpl extends BaseService implements CheckOutService 
     private final HistoryStatusRepo historyStatusRepo;
     private final StockHistoryRepo stockHistoryRepo;
 
-    public CheckOutServiceImpl(CheckOutRepo checkOutRepo, CheckOutDetailRepo checkOutDetailRepo, AgentRepo agentRepo, ProductRepo productRepo, HistoryStatusRepo historyStatusRepo, StockHistoryRepo stockHistoryRepo) {
+    public CheckOutServiceImpl(CheckOutRepo checkOutRepo, CheckOutDetailRepo checkOutDetailRepo,
+                               AgentRepo agentRepo, ProductRepo productRepo, HistoryStatusRepo historyStatusRepo,
+                               StockHistoryRepo stockHistoryRepo) {
         this.checkOutRepo = checkOutRepo;
         this.checkOutDetailRepo = checkOutDetailRepo;
         this.agentRepo = agentRepo;
@@ -91,14 +94,14 @@ public class CheckOutServiceImpl extends BaseService implements CheckOutService 
             Product product = productRepo.findById(productId)
                     .orElseThrow(() -> new NotFoundException("Product Not Found"));
 
+            if(!products.add(productId)){
+                throw new DuplicateResourceException("Duplicate product in Checkout data");
+            }
+
             if (data.getQuantity() > product.getStock()) {
                 throw new NotAllowedStateException(
                         "Stock product " + product.getName() + " Not Sufficient"
                 );
-            }
-
-            if(!products.add(productId)){
-                throw new DuplicateResourceException("Duplicate product in Checkout data");
             }
 
             product.setStock(product.getStock() - data.getQuantity());
@@ -129,17 +132,5 @@ public class CheckOutServiceImpl extends BaseService implements CheckOutService 
 
             stockHistoryRepo.save(history);
     }
-
-    private String generateRandomAlphaNumeric(int length) {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder result = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(chars.length());
-            result.append(chars.charAt(index));
-        }
-        return result.toString();
-    }
-
 
 }

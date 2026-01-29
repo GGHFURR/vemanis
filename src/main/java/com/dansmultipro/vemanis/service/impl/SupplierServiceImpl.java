@@ -10,7 +10,6 @@ import com.dansmultipro.vemanis.exception.BadRequestException;
 import com.dansmultipro.vemanis.exception.DuplicateResourceException;
 import com.dansmultipro.vemanis.exception.NotFoundException;
 import com.dansmultipro.vemanis.exception.ResourceConflictException;
-import com.dansmultipro.vemanis.model.Agent;
 import com.dansmultipro.vemanis.model.Supplier;
 import com.dansmultipro.vemanis.repository.SupplierRepo;
 import com.dansmultipro.vemanis.repository.SupplyRepo;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class SupplierServiceImpl extends BaseService implements SupplierService {
@@ -69,10 +67,10 @@ public class SupplierServiceImpl extends BaseService implements SupplierService 
         var supplier = supplierRepo.findById(supplierId)
                 .orElseThrow(() -> new NotFoundException("Supplier Not Found"));
 
-        if(!supplier.getName().equals(req.getName())){
-            Optional<Supplier> existingAgent = supplierRepo.findByName(req.getName());
-            if(existingAgent.isPresent()){
-                throw new DuplicateResourceException("Data Is Not Unique");
+        if (!supplier.getName().equals(req.getName())) {
+            Optional<Supplier> existingSupplier = supplierRepo.findByName(req.getName());
+            if (existingSupplier.isPresent()) {
+                throw new DuplicateResourceException("Supplier Name Already Exists");
             }
         }
 
@@ -93,10 +91,13 @@ public class SupplierServiceImpl extends BaseService implements SupplierService 
         var supplierId = validateId(id);
         var supplier = supplierRepo.findById(supplierId)
                 .orElseThrow(() -> new NotFoundException("Supplier Not Found"));
-        supplierRepo.delete(supplier);
-        if(supplyRepo.existBySupplier(supplier)){
+
+        if(supplyRepo.existsBySupplier(supplier)){
             throw new ResourceConflictException("Data Cant Be Deleted Because Having Relation In Transaction Record");
         }
+
+        supplierRepo.delete(supplier);
+
         return new DeleteResDTO("Deleted");
     }
 }
